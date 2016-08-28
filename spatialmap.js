@@ -80,9 +80,9 @@ class SpatialMap
             {
                 this.remove(object);
             }
-            for (var y = yStart; y < yEnd; y++)
+            for (var y = yStart; y <= yEnd; y++)
             {
-                for (var x = xStart; x < xEnd; x++)
+                for (var x = xStart; x <= xEnd; x++)
                 {
                     var list = this.grid[y * this.width + x];
                     var length = list.push(object);
@@ -129,9 +129,9 @@ class SpatialMap
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
         var yEnd = Math.ceil((AABB.y + AABB.height) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
-        for (var y = yStart; y < yEnd; y++)
+        for (var y = yStart; y <= yEnd; y++)
         {
-            for (var x = xStart; x < xEnd; x++)
+            for (var x = xStart; x <= xEnd; x++)
             {
                 var list = this.grid[y * this.width + x];
                 if (list.length)
@@ -164,9 +164,9 @@ class SpatialMap
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
         var yEnd = Math.ceil((AABB.y + AABB.height) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
-        for (var y = yStart; y < yEnd; y++)
+        for (var y = yStart; y <= yEnd; y++)
         {
-            for (var x = xStart; x < xEnd; x++)
+            for (var x = xStart; x <= xEnd; x++)
             {
                 var list = this.grid[y * this.width + x];
                 for (var i = 0; i < list.length; i++)
