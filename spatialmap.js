@@ -68,9 +68,9 @@ class SpatialMap
         xStart = xStart < 0 ? 0 : xStart;
         var yStart = Math.floor(AABB.y / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB.x + AABB.width) / this.cellSize);
+        var xEnd = Math.floor((AABB.x + AABB.width - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB.y + AABB.height) / this.cellSize);
+        var yEnd = Math.floor((AABB.y + AABB.height - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
 
         // only remove and insert if mapping has changed
@@ -126,9 +126,9 @@ class SpatialMap
         xStart = xStart < 0 ? 0 : xStart;
         var yStart = Math.floor(AABB.y / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB.x + AABB.width) / this.cellSize);
+        var xEnd = Math.floor((AABB.x + AABB.width - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB.y + AABB.height) / this.cellSize);
+        var yEnd = Math.floor((AABB.y + AABB.height - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
         for (var y = yStart; y <= yEnd; y++)
         {
@@ -161,9 +161,9 @@ class SpatialMap
         xStart = xStart < 0 ? 0 : xStart;
         var yStart = Math.floor(AABB.y / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB.x + AABB.width) / this.cellSize);
+        var xEnd = Math.floor((AABB.x + AABB.width - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB.y + AABB.height) / this.cellSize);
+        var yEnd = Math.floor((AABB.y + AABB.height - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
         for (var y = yStart; y <= yEnd; y++)
         {
