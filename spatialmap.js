@@ -74,7 +74,7 @@ class SpatialMap
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
 
         // only remove and insert if mapping has changed
-        if (true || object.spatial.xStart !== xStart || object.spatial.yStart !== yStart || object.spatial.xEnd !== xEnd || object.spatial.yEnd !== yEnd)
+        if (object.spatial.xStart !== xStart || object.spatial.yStart !== yStart || object.spatial.xEnd !== xEnd || object.spatial.yEnd !== yEnd)
         {
             if (object.spatial.maps.length)
             {
