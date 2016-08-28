@@ -36,8 +36,8 @@ class SpatialMap
     constructor(cellSize, width, height)
     {
         this.cellSize = cellSize;
-        this.width = width;
-        this.height = height;
+        this.width = Math.ceil(width / cellSize);
+        this.height = Math.ceil(height / cellSize);
         this.count = width * height;
         this.grid = [];
         for (var i = 0; i < this.count; i++)
@@ -74,7 +74,7 @@ class SpatialMap
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
 
         // only remove and insert if mapping has changed
-        if (object.spatial.xStart !== xStart || object.spatial.yStart !== yStart || object.spatial.xEnd !== xEnd || object.spatial.yEnd !== yEnd)
+        if (true || object.spatial.xStart !== xStart || object.spatial.yStart !== yStart || object.spatial.xEnd !== xEnd || object.spatial.yEnd !== yEnd)
         {
             if (object.spatial.maps.length)
             {
@@ -85,8 +85,8 @@ class SpatialMap
                 for (var x = xStart; x <= xEnd; x++)
                 {
                     var list = this.grid[y * this.width + x];
-                    var length = list.push(object);
-                    object.spatial.maps.push({list: list, index: length - 1});
+                    list.push(object);
+                    object.spatial.maps.push(list);
                 }
             }
             object.spatial.xStart = xStart;
@@ -104,8 +104,16 @@ class SpatialMap
     {
         while (object.spatial.maps.length)
         {
-            var entry = object.spatial.maps.pop();
-            entry.list.splice(entry.index, 1);
+            var list = object.spatial.maps.pop();
+            var index = list.indexOf(object);
+            if (index === -1)
+            {
+                debug('Index not found.', 'error');
+            }
+            else
+            {
+                list.splice(index, 1);
+            }
         }
     }
 
@@ -129,24 +137,17 @@ class SpatialMap
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
         var yEnd = Math.floor((AABB.y + AABB.height) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
-var count = 0;
         for (var y = yStart; y <= yEnd; y++)
         {
             for (var x = xStart; x <= xEnd; x++)
             {
                 var list = this.grid[y * this.width + x];
-count++;
                 if (list.length)
                 {
                     results = results.concat(list);
                 }
             }
         }
-results.count = count;
-results.xStart = xStart;
-results.xEnd = xEnd;
-results.yStart = yStart;
-results.yEnd = yEnd;
         return results;
     }
 
@@ -225,16 +226,37 @@ results.yEnd = yEnd;
      */
     getBuckets()
     {
-        var buckets = [];
+        var buckets = [], i = 0;
         for (var y = 0; y < this.height; y++)
         {
             for (var x = 0; x < this.width; x++)
             {
-                buckets.push({x: x * this.cellSize, y: y * this.cellSize, width: this.cellSize, height: this.cellSize});
+                buckets.push({x: x * this.cellSize, y: y * this.cellSize, width: this.cellSize, height: this.cellSize, bucket: this.grid[i++]});
             }
         }
         return buckets;
     }
 }
 
-module.exports = SpatialMap;
+// add support for AMD (Asynchronous Module Definition) libraries such as require.js.
+if (typeof define === 'function' && define.amd)
+{
+    define(function()
+    {
+        return {
+            SpatialMap: SpatialMap
+        };
+    });
+}
+
+// add support for CommonJS libraries such as browserify.
+if (typeof exports !== 'undefined')
+{
+    module.exports = SpatialMap;
+}
+
+// define globally in case AMD is not available or available but not used
+if (typeof window !== 'undefined')
+{
+    window.SpatialMap = SpatialMap;
+}
