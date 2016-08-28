@@ -38,7 +38,7 @@ class SpatialMap
         this.cellSize = cellSize;
         this.width = Math.ceil(width / cellSize);
         this.height = Math.ceil(height / cellSize);
-        this.count = width * height;
+        this.count = this.width * this.height;
         this.grid = [];
         for (var i = 0; i < this.count; i++)
         {
