@@ -68,9 +68,9 @@ class SpatialMap
         xStart = xStart < 0 ? 0 : xStart;
         var yStart = Math.floor(AABB.y / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.ceil((AABB.x + AABB.width) / this.cellSize);
+        var xEnd = Math.floor((AABB.x + AABB.width) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.ceil((AABB.y + AABB.height) / this.cellSize);
+        var yEnd = Math.floor((AABB.y + AABB.height) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
 
         // only remove and insert if mapping has changed
@@ -125,21 +125,28 @@ class SpatialMap
         xStart = xStart < 0 ? 0 : xStart;
         var yStart = Math.floor(AABB.y / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.ceil((AABB.x + AABB.width) / this.cellSize);
+        var xEnd = Math.floor((AABB.x + AABB.width) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.ceil((AABB.y + AABB.height) / this.cellSize);
+        var yEnd = Math.floor((AABB.y + AABB.height) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
+var count = 0;
         for (var y = yStart; y <= yEnd; y++)
         {
             for (var x = xStart; x <= xEnd; x++)
             {
                 var list = this.grid[y * this.width + x];
+count++;
                 if (list.length)
                 {
                     results = results.concat(list);
                 }
             }
         }
+results.count = count;
+results.xStart = xStart;
+results.xEnd = xEnd;
+results.yStart = yStart;
+results.yEnd = yEnd;
         return results;
     }
 
@@ -160,9 +167,9 @@ class SpatialMap
         xStart = xStart < 0 ? 0 : xStart;
         var yStart = Math.floor(AABB.y / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.ceil((AABB.x + AABB.width) / this.cellSize);
+        var xEnd = Math.floor((AABB.x + AABB.width) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.ceil((AABB.y + AABB.height) / this.cellSize);
+        var yEnd = Math.floor((AABB.y + AABB.height) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
         for (var y = yStart; y <= yEnd; y++)
         {
@@ -210,6 +217,23 @@ class SpatialMap
             }
         }
         return largest;
+    }
+
+    /**
+     * helper function to evaluate SpatialMap
+     * @return {object[]} an array of buckets in the form of {x, y, width, height}
+     */
+    getBuckets()
+    {
+        var buckets = [];
+        for (var y = 0; y < this.height; y++)
+        {
+            for (var x = 0; x < this.width; x++)
+            {
+                buckets.push({x: x * this.cellSize, y: y * this.cellSize, width: this.cellSize, height: this.cellSize});
+            }
+        }
+        return buckets;
     }
 }
 
