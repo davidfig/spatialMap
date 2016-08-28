@@ -106,14 +106,7 @@ class SpatialMap
         {
             var list = object.spatial.maps.pop();
             var index = list.indexOf(object);
-            if (index === -1)
-            {
-                debug('Index not found.', 'error');
-            }
-            else
-            {
-                list.splice(index, 1);
-            }
+            list.splice(index, 1);
         }
     }
 
