@@ -1,0 +1,219 @@
+<head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="https://rawgit.com/pixijs/pixi.js/dev/bin/pixi.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/ascetic.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
+
+    <!-- For github.io -->
+    <script src="https://rawgit.com/davidfig/animate/master/easing.js"></script>
+    <script src="https://rawgit.com/davidfig/animate/master/animate.js"></script>
+    <script src="https://rawgit.com/davidfig/update/master/update.js"></script>
+    <script src="https://rawgit.com/davidfig/debug/master/debug.js"></script>
+    <script src="https://rawgit.com/davidfig/intersects/master/intersects.js"></script>
+    <script src="https://rawgit.com/davidfig/renderer/master/renderer.js"></script>
+    <script src="https://rawgit.com/davidfig/spatialMap/master/spatialmap.js"></script>
+
+    <!-- For local debug -->
+    <!--<script src="../animate/easing.js"></script>
+    <script src="../animate/animate.js"></script>
+    <script src="../intersects/intersects.js"></script>
+    <script src="../update/update.js"></script>
+    <script src="../debug/debug.js"></script>
+    <script src="../renderer/renderer.js"></script>
+    <script src="../spatialMap/spatialmap.js"></script>-->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .title {
+            margin-top: 1%;
+            margin-left: 15%;
+            font-size: 200%;
+        }
+        #code {
+            left: 15%;
+            position: absolute;
+            word-wrap: break-word;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Example for <a href="https://github.com/davidfig/spatialMap/">github.com/davidfig/spatialMap/</a></div>
+    <pre><code class="javascript" id="code"></code></pre>
+    <script id="sample">
+
+        // debug and update components (not needed for a SpatialMap)
+        Debug.init();
+        Update.init();
+        Update.update();
+
+        // creates the renderer with one option
+        var renderer = new Renderer({autoresize: true, debug: true});
+        var g = renderer.add(new PIXI.Graphics());
+
+        // creates the spatial map
+        var size = 200;
+        var map = new SpatialMap(size / 10, size, size);
+
+        // create colors for the buckets
+        var colors = [];
+        for (var i = 0; i < size * size; i++)
+        {
+            colors[i] = Math.random() * 0xffffff;
+        }
+
+        // store visible bucket counts in map
+        var counts = [];
+
+        // draw original map, scale, and center
+        drawMap(true);
+        renderer.stage.scale.set(Math.min(window.innerWidth, window.innerHeight) * 0.85 / size);
+        renderer.stage.position.set(window.innerWidth / 2 - renderer.stage.width / 2, window.innerHeight / 2 - renderer.stage.height / 2);
+
+        // create circles to put into the map
+        var circles = [];
+        for (var i = 0; i < 5; i++)
+        {
+            var x = Math.random() * size;
+            var y = Math.random() * size;
+            var r = Math.random() * size * 0.1;
+            var color = Math.random() * 0xffffff;
+
+            // create a circle
+            var circle = new PIXI.Circle(x, y, r);
+            circle.color = circle.original = color;
+            circle.AABB = {x: x - r, y: y - r, width: r * 2, height: r * 2};
+
+            // hack so Intersects works properly
+            circle.width = circle.height = r * 2;
+
+            circles.push(circle);
+
+            // insert circle into the map
+            map.insert(circle);
+        }
+        drawCircles();
+
+        // start the circles moving
+        animate();
+
+        Update.add(
+            function()
+            {
+                g.clear();
+                drawMap();
+                collisions();
+                drawCircles();
+                renderer.dirty = true;
+            });
+
+        function drawMap(first)
+        {
+            // call a helper function for testing purposes (usually use query functions)
+            var buckets = map.getBuckets();
+            for (var i = 0; i < buckets.length; i++)
+            {
+                var bucket = buckets[i];
+                if (bucket.bucket.length)
+                {
+                    g.beginFill(0xff0000);
+                }
+                else
+                {
+                    g.beginFill(colors[i], 0.2);
+                }
+                g.drawRect(bucket.x, bucket.y, bucket.width, bucket.height);
+                g.endFill();
+                if (first)
+                {
+                    var count = renderer.add(new PIXI.Text('0', {fontSize: 10, fill: 'white'}));
+                    count.anchor.set(0.5);
+                    count.x = bucket.x + bucket.width / 2;
+                    count.y = bucket.y + bucket.height / 2;
+                    counts.push(count);
+                }
+                else
+                {
+                    counts[i].text = bucket.bucket.length;
+                }
+            }
+        }
+
+        function drawCircles()
+        {
+            for (var i = 0; i < circles.length; i++)
+            {
+                var circle = circles[i];
+                g.beginFill(circle.color, 0.75);
+                g.drawShape(circle);
+                g.endFill();
+            }
+        }
+
+        function next(circle)
+        {
+            function each(elapsed, object)
+            {
+                object.AABB.x = object.x - object.radius;
+                object.AABB.y = object.y - object.radius;
+                map.insert(object);
+            }
+
+            var target = new PIXI.Point(Math.random() * size, Math.random() * size);
+            Animate.target(circle, target, 0.05, {onEach: each, onDone: next});
+        }
+
+        function animate()
+        {
+            for (var i = 0; i < circles.length; i++)
+            {
+                next(circles[i]);
+            }
+        }
+
+        // find collisions using the map
+        function collisions()
+        {
+            // reset all circles to original colors
+            for (var i = 0; i < circles.length; i++)
+            {
+                circles[i].color = circles[i].original;
+            }
+
+            // query the map for each circle and set intersections
+            var count = 0;
+            for (var i = 0; i < circles.length; i++)
+            {
+                var circle = circles[i];
+                map.queryCallback(circle.AABB,
+                    function(object)
+                    {
+                        // possible intersection
+                        if (object !== circle)
+                        {
+                            // check intersection
+                            if (Intersects.circleCircle(object, circle))
+                            {
+                                object.color = 0xffffff;
+                                circle.color = 0xffffff;
+                            }
+                            count++;
+                        }
+                    });
+            }
+            debugOne('Checking ' + count + ' intersections instead of ' + circles.length * (circles.length - 1) + ' intersections.')
+        }
+
+    </script>
+    <script>
+        window.onload = function()
+        {
+            var code = document.getElementById('code');
+            var script = document.getElementById('sample');
+            code.innerHTML = script.innerHTML;
+            hljs.highlightBlock(code);
+        };
+    </script>
+</body>
