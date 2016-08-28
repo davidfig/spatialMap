@@ -1,13 +1,13 @@
 ## spatialMap
-2D Spatial Map for Javascript (uses ES6 classes and module.exports)
+2D Spatial Map for Javascript (uses ES6 class)
 
 ## Live Example with Source
 https://davidfig.github.io/spatialMap/
 
 ## Installation
-include renderer.js in your project or add to your workflow
+include spatialmap.js in your project or add to your workflow
 
-    <script src="renderer.js"></script>
+    <script src="spatialmap.js"></script>
 
 ## License
 MIT License
