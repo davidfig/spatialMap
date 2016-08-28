@@ -48,7 +48,7 @@ class SpatialMap
 
     /**
      * inserts an object into the map (also removes object from last insertion)
-     * side effect: adds object.spatialMaps to track last insertion
+     * side effect: adds object.spatial to track last insertion
      * @param {object} object
      * @param {object} object.AABB bounding box
      * @param {number} object.AABB.x
@@ -58,16 +58,9 @@ class SpatialMap
      */
     insert(object)
     {
-        if (object.spatialMaps)
+        if (!object.spatial)
         {
-            if (object.spatialMaps.length)
-            {
-                this.remove(object);
-            }
-        }
-        else
-        {
-            object.spatialMaps = [];
+            object.spatial = {maps: []};
         }
 
         var AABB = object.AABB;
@@ -79,14 +72,27 @@ class SpatialMap
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
         var yEnd = Math.ceil((AABB.y + AABB.height) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
-        for (var y = yStart; y < yEnd; y++)
+
+        // only remove and insert if mapping has changed
+        if (object.spatial.xStart !== xStart || object.spatial.yStart !== yStart || object.spatial.xEnd !== xEnd || object.spatial.yEnd !== yEnd)
         {
-            for (var x = xStart; x < xEnd; x++)
+            if (object.spatial.maps.length)
             {
-                var list = this.grid[y * this.width + x];
-                var length = list.push(object);
-                object.spatialMaps.push({list: list, index: length - 1});
+                this.remove(object);
             }
+            for (var y = yStart; y < yEnd; y++)
+            {
+                for (var x = xStart; x < xEnd; x++)
+                {
+                    var list = this.grid[y * this.width + x];
+                    var length = list.push(object);
+                    object.spatial.maps.push({list: list, index: length - 1});
+                }
+            }
+            object.spatial.xStart = xStart;
+            object.spatial.yStart = yStart;
+            object.spatial.xEnd = xEnd;
+            object.spatial.yEnd = yEnd;
         }
     }
 
@@ -96,9 +102,9 @@ class SpatialMap
      */
     remove(object)
     {
-        while (object.spatialMaps.length)
+        while (object.spatial.maps.length)
         {
-            var entry = object.spatialMaps.pop();
+            var entry = object.spatial.maps.pop();
             entry.list.splice(entry.index, 1);
         }
     }
@@ -151,9 +157,13 @@ class SpatialMap
     queryCallback(AABB, callback)
     {
         var xStart = Math.floor(AABB.x / this.cellSize);
+        xStart = xStart < 0 ? 0 : xStart;
         var yStart = Math.floor(AABB.y / this.cellSize);
+        yStart = yStart < 0 ? 0 : yStart;
         var xEnd = Math.ceil((AABB.x + AABB.width) / this.cellSize);
+        xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
         var yEnd = Math.ceil((AABB.y + AABB.height) / this.cellSize);
+        yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
         for (var y = yStart; y < yEnd; y++)
         {
             for (var x = xStart; x < xEnd; x++)
