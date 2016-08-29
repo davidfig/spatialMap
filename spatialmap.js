@@ -189,11 +189,11 @@ class SpatialMap
     getAverageSize()
     {
         var total = 0;
-        for (var i = 0; i < this.size; i++)
+        for (var i = 0; i < this.count; i++)
         {
             total += this.grid[i].length;
         }
-        return total / this.size;
+        return total / this.count;
     }
 
     /**
@@ -202,8 +202,8 @@ class SpatialMap
      */
     getLargest()
     {
-        var largest = 0, object;
-        for (var i = 0; i < this.size; i++)
+        var largest = 0;
+        for (var i = 0; i < this.count; i++)
         {
             if (this.grid[i].length > largest)
             {
