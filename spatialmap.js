@@ -40,7 +40,7 @@ class SpatialMap
         this.height = Math.ceil(height / cellSize);
         this.count = this.width * this.height;
         this.grid = [];
-        for (var i = 0; i < this.count; i++)
+        for (let i = 0; i < this.count; i++)
         {
             this.grid[i] = [];
         }
@@ -112,6 +112,7 @@ class SpatialMap
 
     /**
      * returns an array of objects contained within bounding box
+     * NOTE: this may include duplicates
      * @param {object} AABB bounding box to search
      * @param {number} object.AABB.x
      * @param {number} object.AABB.y
@@ -147,6 +148,7 @@ class SpatialMap
     /**
      * iterates through objects contained within bounding box
      * stops iterating if the callback returns true
+     * NOTE: this may return duplicates
      * @param {object} AABB bounding box to search
      * @param {number} object.AABB.x
      * @param {number} object.AABB.y
