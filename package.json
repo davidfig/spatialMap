@@ -1,0 +1,19 @@
+{
+  "name": "@yy/spatialmap",
+  "version": "1.0.0",
+  "description": "2D Spatial Map for Javascript (uses ES6 classes and module.exports)",
+  "main": "spatialmap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/davidfig/spatialmap.git"
+  },
+  "author": "david figatner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidfig/spatialmap/issues"
+  },
+  "homepage": "https://github.com/davidfig/spatialmap#readme"
+}
