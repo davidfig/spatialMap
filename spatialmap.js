@@ -102,11 +102,14 @@ class SpatialMap
      */
     remove(object)
     {
-        while (object.spatial.maps.length)
+        if (object.spatial)
         {
-            var list = object.spatial.maps.pop();
-            var index = list.indexOf(object);
-            list.splice(index, 1);
+            while (object.spatial.maps.length)
+            {
+                var list = object.spatial.maps.pop();
+                var index = list.indexOf(object);
+                list.splice(index, 1);
+            }
         }
     }
 
