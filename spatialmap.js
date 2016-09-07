@@ -32,15 +32,19 @@ class SpatialMap
 {
     /**
      * @param {number} cellSize used to create map
+     * @param {number} width of world
+     * @param {number} height of world
+     * @param {object} options
+     * @param {boolean} options.update - keep a second list of elements to enable update
      */
-    constructor(cellSize, width, height)
+    constructor(cellSize, width, height, options)
     {
         this.cellSize = cellSize;
         this.width = Math.ceil(width / cellSize);
         this.height = Math.ceil(height / cellSize);
         this.count = this.width * this.height;
         this.grid = [];
-        this.list = [];
+        this.list = options.update ? [] : null;
         for (let i = 0; i < this.count; i++)
         {
             this.grid[i] = [];
@@ -58,7 +62,10 @@ class SpatialMap
         if (!object.spatial)
         {
             object.spatial = {maps: []};
-            this.list.push(object);
+            if (this.list)
+            {
+                this.list.push(object);
+            }
         }
 
         var AABB = object.AABB;
@@ -109,9 +116,10 @@ class SpatialMap
                 list.splice(index, 1);
             }
         }
-        if (!replace)
+        var list = this.list;
+        if (list && !replace)
         {
-            this.list.splice(this.list.indexOf(object));
+            list.splice(this.list.indexOf(object));
         }
     }
 
@@ -184,10 +192,13 @@ class SpatialMap
     update()
     {
         var list = this.list;
-        var length = list.length;
-        for (var i = 0; i < length; i++)
+        if (list)
         {
-            this.insert(list[i]);
+            var length = list.length;
+            for (var i = 0; i < length; i++)
+            {
+                this.insert(list[i]);
+            }
         }
     }
 
