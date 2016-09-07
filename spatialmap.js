@@ -40,6 +40,7 @@ class SpatialMap
         this.height = Math.ceil(height / cellSize);
         this.count = this.width * this.height;
         this.grid = [];
+        this.list = [];
         for (let i = 0; i < this.count; i++)
         {
             this.grid[i] = [];
@@ -57,6 +58,7 @@ class SpatialMap
         if (!object.spatial)
         {
             object.spatial = {maps: []};
+            this.list.push(object);
         }
 
         var AABB = object.AABB;
@@ -74,7 +76,7 @@ class SpatialMap
         {
             if (object.spatial.maps.length)
             {
-                this.remove(object);
+                this.remove(object, true);
             }
             for (var y = yStart; y <= yEnd; y++)
             {
@@ -96,7 +98,7 @@ class SpatialMap
      * removes existing object from the map
      * @param {object} object
      */
-    remove(object)
+    remove(object, replace)
     {
         if (object.spatial)
         {
@@ -106,6 +108,10 @@ class SpatialMap
                 var index = list.indexOf(object);
                 list.splice(index, 1);
             }
+        }
+        if (!replace)
+        {
+            this.list.splice(this.list.indexOf(object));
         }
     }
 
@@ -173,6 +179,16 @@ class SpatialMap
             }
         }
         return false;
+    }
+
+    update()
+    {
+        var list = this.list;
+        var length = list.length;
+        for (var i = 0; i < length; i++)
+        {
+            this.insert(list[i]);
+        }
     }
 
     /**
