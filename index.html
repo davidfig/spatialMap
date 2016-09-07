@@ -1,6 +1,6 @@
 <head>
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
-    <script src="https://rawgit.com/pixijs/pixi.js/dev/bin/pixi.js"></script>
+    <script src="https://rawgit.com/pixijs/pixi.js/master/bin/pixi.js"></script>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/ascetic.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/highlight.min.js"></script>
 
@@ -16,7 +16,7 @@
     <!-- For local debug -->
     <!--<script src="../animate/easing.js"></script>
     <script src="../animate/animate.js"></script>
-    <script src="../intersects/intersects.js"></script>
+    <script src="../intersects/intersects-standalone.js"></script>
     <script src="../update/update.js"></script>
     <script src="../debug/debug.js"></script>
     <script src="../renderer/renderer.js"></script>
@@ -47,6 +47,7 @@
         // debug and update components (not needed for a SpatialMap)
         Debug.init();
         Update.init();
+        Animate.init();
         Update.update();
 
         // creates the renderer with one option
@@ -84,15 +85,17 @@
             // create a circle
             var circle = new PIXI.Circle(x, y, r);
             circle.color = circle.original = color;
-            circle.AABB = {x: x - r, y: y - r, width: r * 2, height: r * 2};
+            // circle.AABB = [x - r, y - r, x + r, y + r];
 
             // hack so Intersects works properly
             circle.width = circle.height = r * 2;
 
+            circle.shape = new Intersects.Circle(circle);
+
             circles.push(circle);
 
             // insert circle into the map
-            map.insert(circle);
+            map.insert(circle.shape);
         }
         drawCircles();
 
@@ -156,9 +159,7 @@
         {
             function each(elapsed, object)
             {
-                object.AABB.x = object.x - object.radius;
-                object.AABB.y = object.y - object.radius;
-                map.insert(object);
+                map.insert(object.shape);
             }
 
             var target = new PIXI.Point(Math.random() * size, Math.random() * size);
@@ -187,16 +188,16 @@
             for (var i = 0; i < circles.length; i++)
             {
                 var circle = circles[i];
-                map.queryCallback(circle.AABB,
-                    function(object)
+                map.queryCallback(circle.shape.AABB,
+                    function(shape)
                     {
                         // possible intersection
-                        if (object !== circle)
+                        if (shape.article !== circle)
                         {
                             // check intersection
-                            if (Intersects.circleCircle(object, circle))
+                            if (circle.shape.collidesCircle(shape))
                             {
-                                object.color = 0xffffff;
+                                shape.article.color = 0xffffff;
                                 circle.color = 0xffffff;
                             }
                             count++;
