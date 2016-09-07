@@ -13,15 +13,15 @@
  * // use your own 2D graphics libraries--I like PIXI.js
  * var circle = new Circle(10, 10, 5);
  *
- * // each object must have an AABB bounding box {top-left x, top-left y, width, height}
- * circle.AABB = {5, 5, 10, 10};
+ * // each object must have an AABB bounding box [x1, y1, x2, y2]
+ * circle.AABB = [5, 5, 10, 10];
  * map.insert(circle);
  *
  * // returns the circle
- * var results = map.query({x: 0, y: 0, width: 10, height: 10});
+ * var results = map.query([0, 0, 10, 10]);
  *
  * // or iterate over the results to avoid creating new arrays
- * map.query({x: 0, y: 0, width: 10, height: 10},
+ * map.query([0, 0, 10, 10],
  *  function(object)
  *  {
  *      object.draw();
@@ -50,11 +50,7 @@ class SpatialMap
      * inserts an object into the map (also removes object from last insertion)
      * side effect: adds object.spatial to track last insertion
      * @param {object} object
-     * @param {object} object.AABB bounding box
-     * @param {number} object.AABB.x
-     * @param {number} object.AABB.y
-     * @param {number} object.AABB.width
-     * @param {number} object.AABB.height
+     * @param {number[]} AABB bounding box [x1, y1, x2, y2]
      */
     insert(object)
     {
@@ -64,13 +60,13 @@ class SpatialMap
         }
 
         var AABB = object.AABB;
-        var xStart = Math.floor(AABB.x / this.cellSize);
+        var xStart = Math.floor(AABB[0] / this.cellSize);
         xStart = xStart < 0 ? 0 : xStart;
-        var yStart = Math.floor(AABB.y / this.cellSize);
+        var yStart = Math.floor(AABB[1] / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB.x + AABB.width - 1) / this.cellSize);
+        var xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB.y + AABB.height - 1) / this.cellSize);
+        var yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
 
         // only remove and insert if mapping has changed
@@ -116,23 +112,19 @@ class SpatialMap
     /**
      * returns an array of objects contained within bounding box
      * NOTE: this may include duplicates
-     * @param {object} AABB bounding box to search
-     * @param {number} object.AABB.x
-     * @param {number} object.AABB.y
-     * @param {number} object.AABB.width
-     * @param {number} object.AABB.height
+     * @param {number[]} AABB bounding box to search [x1, y1, x2, y2]
      * @return {object[]} search results
      */
     query(AABB)
     {
         var results = [];
-        var xStart = Math.floor(AABB.x / this.cellSize);
+        var xStart = Math.floor(AABB[0] / this.cellSize);
         xStart = xStart < 0 ? 0 : xStart;
-        var yStart = Math.floor(AABB.y / this.cellSize);
+        var yStart = Math.floor(AABB[1] / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB.x + AABB.width - 1) / this.cellSize);
+        var xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB.y + AABB.height - 1) / this.cellSize);
+        var yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
         for (var y = yStart; y <= yEnd; y++)
         {
@@ -152,23 +144,19 @@ class SpatialMap
      * iterates through objects contained within bounding box
      * stops iterating if the callback returns true
      * NOTE: this may return duplicates
-     * @param {object} AABB bounding box to search
-     * @param {number} object.AABB.x
-     * @param {number} object.AABB.y
-     * @param {number} object.AABB.width
-     * @param {number} object.AABB.height
+     * @param {number[]} AABB bounding box to search [x1, y1, x2, y2]
      * @param {function} callback
      * @return {boolean} true if callback returned early
      */
     queryCallback(AABB, callback)
     {
-        var xStart = Math.floor(AABB.x / this.cellSize);
+        var xStart = Math.floor(AABB[0] / this.cellSize);
         xStart = xStart < 0 ? 0 : xStart;
-        var yStart = Math.floor(AABB.y / this.cellSize);
+        var yStart = Math.floor(AABB[1] / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB.x + AABB.width - 1) / this.cellSize);
+        var xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB.y + AABB.height - 1) / this.cellSize);
+        var yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
         for (var y = yStart; y <= yEnd; y++)
         {
