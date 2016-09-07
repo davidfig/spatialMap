@@ -39,6 +39,7 @@ class SpatialMap
      */
     constructor(cellSize, width, height, options)
     {
+        options = options || {};
         this.cellSize = cellSize;
         this.width = Math.ceil(width / cellSize);
         this.height = Math.ceil(height / cellSize);
