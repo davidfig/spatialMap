@@ -28,6 +28,10 @@
  *  }
  * );
  */
+
+// ID to avoid duplicates during query
+let checked = 0;
+
 class SpatialMap
 {
     /**
@@ -173,6 +177,7 @@ class SpatialMap
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
         var yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
+        checked++;
         for (var y = yStart; y <= yEnd; y++)
         {
             for (var x = xStart; x <= xEnd; x++)
@@ -180,9 +185,14 @@ class SpatialMap
                 var list = this.grid[y * this.width + x];
                 for (var i = 0; i < list.length; i++)
                 {
-                    if (callback(list[i]))
+                    const article = list[i];
+                    if (article.checked !== checked)
                     {
-                        return true;
+                        if (callback(list[i]))
+                        {
+                            return true;
+                        }
+                        article.checked = checked;
                     }
                 }
             }
