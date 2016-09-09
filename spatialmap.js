@@ -30,7 +30,7 @@
  */
 
 // ID to avoid duplicates during query
-let checked = 0;
+let checked = Math.floor(Math.random() * 1000000);
 
 class SpatialMap
 {
