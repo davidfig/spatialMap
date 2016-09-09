@@ -255,7 +255,9 @@ class SpatialMap
         {
             for (var x = 0; x < this.width; x++)
             {
-                buckets.push({x: x * this.cellSize, y: y * this.cellSize, width: this.cellSize, height: this.cellSize, bucket: this.grid[i++]});
+                let xx = x * this.cellSize;
+                let yy = y * this.cellSize;
+                buckets.push([xx, yy, xx + this.cellSize, yy + this.cellSize]);
             }
         }
         return buckets;
