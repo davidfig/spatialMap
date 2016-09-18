@@ -1,19 +1,25 @@
 /**
- * Copyright (c) 2016 YOPEY YOPEY LLC
+ * @file spatialmap.js
  * @author David Figatner
  * @license MIT
-*/
+ * Copyright (c) 2016 YOPEY YOPEY LLC
+ */
+
+// ID to avoid duplicates during query
+let checked = Math.floor(Math.random() * 1000000);
 
 /**
- * 2D Spatial Map
- * example:
- *
+ * @class SpatialMap
+ * @classdesc
+ * 2D spatial map
+ * @example
  * var map = new SpatialMap();
  *
  * // use your own 2D graphics libraries--I like PIXI.js
  * var circle = new Circle(10, 10, 5);
  *
- * // each object must have an AABB bounding box [x1, y1, x2, y2]
+ * // each object must have an AABB bounding box [x1, y1, x2, y2],
+ * // see yy-intersects (github:davidfig/intersects) for a library that provides this with various shapes
  * circle.AABB = [5, 5, 10, 10];
  * map.insert(circle);
  *
@@ -28,10 +34,6 @@
  *  }
  * );
  */
-
-// ID to avoid duplicates during query
-let checked = Math.floor(Math.random() * 1000000);
-
 class SpatialMap
 {
     /**
@@ -250,7 +252,7 @@ class SpatialMap
      */
     getBuckets()
     {
-        var buckets = [], i = 0;
+        var buckets = [];
         for (var y = 0; y < this.height; y++)
         {
             for (var x = 0; x < this.width; x++)
@@ -264,25 +266,4 @@ class SpatialMap
     }
 }
 
-// add support for AMD (Asynchronous Module Definition) libraries such as require.js.
-if (typeof define === 'function' && define.amd)
-{
-    define(function()
-    {
-        return {
-            SpatialMap: SpatialMap
-        };
-    });
-}
-
-// add support for CommonJS libraries such as browserify.
-if (typeof exports !== 'undefined')
-{
-    module.exports = SpatialMap;
-}
-
-// define globally in case AMD is not available or available but not used
-if (typeof window !== 'undefined')
-{
-    window.SpatialMap = SpatialMap;
-}
+module.exports = SpatialMap;
