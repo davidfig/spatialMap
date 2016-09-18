@@ -9,8 +9,7 @@
 let checked = Math.floor(Math.random() * 1000000);
 
 /**
- * @class SpatialMap
- * @classdesc
+ * @description
  * 2D spatial map
  * @example
  * var map = new SpatialMap();
