@@ -5,7 +5,6 @@
 https://davidfig.github.io/spatialmap/
 
 ## Installation
-include update.js in your project or add to your workflow
 
     npm install yy-spatialmap
 
@@ -134,7 +133,8 @@ helper function to evaluate proper cell size
 helper function to evaluate SpatialMap
 
 **Kind**: instance method of <code>[SpatialMap](#SpatialMap)</code>  
-**Returns**: <code>Array.&lt;object&gt;</code> - an array of buckets in the form of {x, y, width, height}  
+**Returns**: <code>Array.&lt;object&gt;</code> - an array of buckets in the form of [x1, y1, x2, y2]  
+
 * * *
 
 Copyright (c) 2016 YOPEY YOPEY LLC - MIT License - Documented by [jsdoc-to-markdown](https://github.com/75lb/jsdoc-to-markdown)

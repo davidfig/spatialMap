@@ -247,7 +247,7 @@ class SpatialMap
 
     /**
      * helper function to evaluate SpatialMap
-     * @return {object[]} an array of buckets in the form of {x, y, width, height}
+     * @return {object[]} an array of buckets in the form of [x1, y1, x2, y2]
      */
     getBuckets()
     {
@@ -258,7 +258,7 @@ class SpatialMap
             {
                 let xx = x * this.cellSize;
                 let yy = y * this.cellSize;
-                buckets.push([xx, yy, xx + this.cellSize, yy + this.cellSize]);
+                buckets.push({AABB: [xx, yy, xx + this.cellSize, yy + this.cellSize], bucket: this.grid[x + y * this.width]});
             }
         }
         return buckets;
