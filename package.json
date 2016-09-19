@@ -1,0 +1,34 @@
+{
+  "name": "spatialmapdemo",
+  "version": "1.0.0",
+  "description": "2D Spatial Map for Javascript (uses ES6 class)",
+  "main": "index.js",
+  "dependencies": {
+    "pixi.js": "^4.0.1",
+    "yy-animate": "^1.0.2",
+    "yy-debug": "^1.0.0",
+    "yy-intersects": "^1.0.0",
+    "yy-renderer": "^1.0.0",
+    "yy-spatialmap": "^1.0.0",
+    "yy-update": "^1.0.0"
+  },
+  "devDependencies": {
+    "browserify": "^13.1.0",
+    "highlight.js": "^9.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node_modules/.bin/browserify *.js -u index.compiled.js > index.compiled.js",
+    "watch": "watchify *.js -u index.compiled.js -vo index.compiled.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidfig/spatialMap.git"
+  },
+  "author": "David Figatner",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidfig/spatialMap/issues"
+  },
+  "homepage": "https://github.com/davidfig/spatialMap#readme"
+}
