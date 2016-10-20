@@ -19,6 +19,7 @@ https://davidfig.github.io/spatialmap/
     * [.insert(object, AABB)](#SpatialMap+insert)
     * [.remove(object)](#SpatialMap+remove)
     * [.query(AABB)](#SpatialMap+query) ⇒ <code>Array.&lt;object&gt;</code>
+    * [.queryCallbackArticle(AABB, callback)](#SpatialMap+queryCallbackArticle) ⇒ <code>boolean</code>
     * [.queryCallback(AABB, callback)](#SpatialMap+queryCallback) ⇒ <code>boolean</code>
     * [.getAverageSize()](#SpatialMap+getAverageSize) ⇒ <code>number</code>
     * [.getLargest()](#SpatialMap+getLargest) ⇒ <code>number</code>
@@ -98,12 +99,25 @@ NOTE: this may include duplicates
 | --- | --- | --- |
 | AABB | <code>Array.&lt;number&gt;</code> | bounding box to search [x1, y1, x2, y2] |
 
+<a name="SpatialMap+queryCallbackArticle"></a>
+
+### spatialMap.queryCallbackArticle(AABB, callback) ⇒ <code>boolean</code>
+iterates through objects in the same buckets as article
+stops iterating if the callback returns true
+
+**Kind**: instance method of <code>[SpatialMap](#SpatialMap)</code>  
+**Returns**: <code>boolean</code> - true if callback returned early  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| AABB | <code>Array.&lt;number&gt;</code> | bounding box to search [x1, y1, x2, y2] |
+| callback | <code>function</code> |  |
+
 <a name="SpatialMap+queryCallback"></a>
 
 ### spatialMap.queryCallback(AABB, callback) ⇒ <code>boolean</code>
 iterates through objects contained within bounding box
 stops iterating if the callback returns true
-NOTE: this may return duplicates
 
 **Kind**: instance method of <code>[SpatialMap](#SpatialMap)</code>  
 **Returns**: <code>boolean</code> - true if callback returned early  
