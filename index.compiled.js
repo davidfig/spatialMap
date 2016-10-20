@@ -6,7 +6,7 @@
  * Copyright (c) 2016 YOPEY YOPEY LLC
  */
 
-// ID to avoid duplicates during query
+// ID to avoid sending duplicates during query
 let checked = Math.floor(Math.random() * 1000000);
 
 /**
@@ -75,14 +75,14 @@ class SpatialMap
             }
         }
 
-        var AABB = object.AABB;
-        var xStart = Math.floor(AABB[0] / this.cellSize);
+        const AABB = object.AABB;
+        let xStart = Math.floor(AABB[0] / this.cellSize);
         xStart = xStart < 0 ? 0 : xStart;
-        var yStart = Math.floor(AABB[1] / this.cellSize);
+        let yStart = Math.floor(AABB[1] / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
+        let xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
+        let yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
 
         // only remove and insert if mapping has changed
@@ -92,11 +92,11 @@ class SpatialMap
             {
                 this.remove(object, true);
             }
-            for (var y = yStart; y <= yEnd; y++)
+            for (let y = yStart; y <= yEnd; y++)
             {
-                for (var x = xStart; x <= xEnd; x++)
+                for (let x = xStart; x <= xEnd; x++)
                 {
-                    var list = this.grid[y * this.width + x];
+                    const list = this.grid[y * this.width + x];
                     list.push(object);
                     object.spatial.maps.push(list);
                 }
@@ -114,19 +114,24 @@ class SpatialMap
      */
     remove(object, replace)
     {
-        if (object.spatial)
+        const spatial = object.spatial;
+        if (spatial)
         {
-            while (object.spatial.maps.length)
+            const maps = spatial.maps;
+            while (maps.length)
             {
-                var list = object.spatial.maps.pop();
-                var index = list.indexOf(object);
-                list.splice(index, 1);
+                const list = maps.pop();
+                const index = list.indexOf(object);
+                if (index !== -1)
+                {
+                    list.splice(index, 1);
+                }
             }
         }
-        var list = this.list;
+        const list = this.list;
         if (list && !replace)
         {
-            list.splice(this.list.indexOf(object));
+            list.splice(list.indexOf(object));
         }
     }
 
@@ -138,20 +143,20 @@ class SpatialMap
      */
     query(AABB)
     {
-        var results = [];
-        var xStart = Math.floor(AABB[0] / this.cellSize);
+        const results = [];
+        let xStart = Math.floor(AABB[0] / this.cellSize);
         xStart = xStart < 0 ? 0 : xStart;
-        var yStart = Math.floor(AABB[1] / this.cellSize);
+        let yStart = Math.floor(AABB[1] / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
+        let xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
+        let yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
-        for (var y = yStart; y <= yEnd; y++)
+        for (let y = yStart; y <= yEnd; y++)
         {
-            for (var x = xStart; x <= xEnd; x++)
+            for (let x = xStart; x <= xEnd; x++)
             {
-                var list = this.grid[y * this.width + x];
+                const list = this.grid[y * this.width + x];
                 if (list.length)
                 {
                     results = results.concat(list);
@@ -162,30 +167,64 @@ class SpatialMap
     }
 
     /**
+     * iterates through objects in the same buckets as article
+     * stops iterating if the callback returns true
+     * @param {number[]} AABB bounding box to search [x1, y1, x2, y2]
+     * @param {function} callback
+     * @return {boolean} true if callback returned early
+     */
+    queryCallbackArticle(article, callback)
+    {
+        checked++;
+        article.checked = checked;
+        const maps = article.spatial.maps;
+        const count = maps.length;
+        article.checked = checked;
+        for (let i = 0; i < count; i++)
+        {
+            const map = maps[i];
+            const mapCount = map.length;
+            for (let j = 0; j < mapCount; j++)
+            {
+                const check = map[j];
+                if (check.checked !== checked)
+                {
+                    if (callback(check))
+                    {
+                        return true;
+                    }
+                    check.checked = checked;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * iterates through objects contained within bounding box
      * stops iterating if the callback returns true
-     * NOTE: this may return duplicates
      * @param {number[]} AABB bounding box to search [x1, y1, x2, y2]
      * @param {function} callback
      * @return {boolean} true if callback returned early
      */
     queryCallback(AABB, callback)
     {
-        var xStart = Math.floor(AABB[0] / this.cellSize);
+        let xStart = Math.floor(AABB[0] / this.cellSize);
         xStart = xStart < 0 ? 0 : xStart;
-        var yStart = Math.floor(AABB[1] / this.cellSize);
+        let yStart = Math.floor(AABB[1] / this.cellSize);
         yStart = yStart < 0 ? 0 : yStart;
-        var xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
+        let xEnd = Math.floor((AABB[2] - 1) / this.cellSize);
         xEnd = xEnd >= this.width ? this.width - 1 : xEnd;
-        var yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
+        let yEnd = Math.floor((AABB[3] - 1) / this.cellSize);
         yEnd = yEnd >= this.height ? this.height - 1 : yEnd;
         checked++;
-        for (var y = yStart; y <= yEnd; y++)
+        for (let y = yStart; y <= yEnd; y++)
         {
-            for (var x = xStart; x <= xEnd; x++)
+            for (let x = xStart; x <= xEnd; x++)
             {
-                var list = this.grid[y * this.width + x];
-                for (var i = 0; i < list.length; i++)
+                const list = this.grid[y * this.width + x];
+                const count = list.length;
+                for (let i = 0; i < count; i++)
                 {
                     const article = list[i];
                     if (article.checked !== checked)
@@ -438,7 +477,7 @@ function collisions()
     for (var i = 0; i < circles.length; i++)
     {
         var circle = circles[i];
-        map.queryCallback(circle.shape.AABB,
+        map.queryCallbackArticle(circle.shape,
             function(shape)
             {
                 // possible intersection

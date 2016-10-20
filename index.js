@@ -4,7 +4,7 @@ const Update = require('yy-update');
 const Animate = require('yy-animate');
 const Renderer = require('yy-renderer');
 const Intersects = require('yy-intersects');
-const SpatialMap = require('yy-spatialmap');
+const SpatialMap = require('../spatialmap/spatialmap.js');
 
 // debug and update components
 Debug.init();
@@ -151,7 +151,7 @@ function collisions()
     for (var i = 0; i < circles.length; i++)
     {
         var circle = circles[i];
-        map.queryCallback(circle.shape.AABB,
+        map.queryCallbackArticle(circle.shape,
             function(shape)
             {
                 // possible intersection
