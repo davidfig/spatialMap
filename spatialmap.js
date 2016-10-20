@@ -177,13 +177,11 @@ class SpatialMap
         checked++;
         article.checked = checked;
         const maps = article.spatial.maps;
-        const count = maps.length;
         article.checked = checked;
-        for (let i = 0; i < count; i++)
+        for (let i = 0; i < maps.length; i++)
         {
             const map = maps[i];
-            const mapCount = map.length;
-            for (let j = 0; j < mapCount; j++)
+            for (let j = 0; j < map.length; j++)
             {
                 const check = map[j];
                 if (check.checked !== checked)
@@ -222,8 +220,7 @@ class SpatialMap
             for (let x = xStart; x <= xEnd; x++)
             {
                 const list = this.grid[y * this.width + x];
-                const count = list.length;
-                for (let i = 0; i < count; i++)
+                for (let i = 0; i < list.length; i++)
                 {
                     const article = list[i];
                     if (article.checked !== checked)

@@ -1,6 +1,6 @@
 {
   "name": "yy-spatialmap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "2D Spatial Map for javascript",
   "main": "spatialmap.js",
   "scripts": {
