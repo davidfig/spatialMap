@@ -142,7 +142,7 @@ class SpatialMap
      */
     query(AABB)
     {
-        const results = [];
+        let results = [];
         let xStart = Math.floor(AABB[0] / this.cellSize);
         xStart = xStart < 0 ? 0 : xStart;
         let yStart = Math.floor(AABB[1] / this.cellSize);
